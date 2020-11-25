@@ -154,7 +154,6 @@ namespace DevTeams_Console
             // Team Name
             Console.WriteLine($"\nEnter the team name that {newDeveloper.Name} belongs to:");
             string devTeamAsString = Console.ReadLine();
-            newDeveloper.TeamName = devTeamAsString;
 
             if (_devTeamRepo.GetTeamByName(devTeamAsString) == null)
             {
@@ -182,7 +181,7 @@ namespace DevTeams_Console
                 Console.WriteLine($"Name: {developer.Name}\n" +
                     $"ID: {developer.ID}\n" +
                     $"Pluralsight Access: {developer.HasAccessToPluralsight}\n" +
-                    $"Team: {developer.TeamName}\n");
+                    $"Team(s): {developer.TeamName}\n");
             }
         }
 
@@ -237,7 +236,7 @@ namespace DevTeams_Console
             // Team
             Console.WriteLine($"Enter the new team name for {newDeveloper.Name}:");
             string devTeam = Console.ReadLine();
-            newDeveloper.TeamName = devTeam;
+
 
             if (_devTeamRepo.GetTeamByName(devTeam) == null)
             {
@@ -447,17 +446,18 @@ namespace DevTeams_Console
             _devTeamRepo.AddDevTeam(ape);
             _devTeamRepo.AddDevTeam(bonobo);
 
-            Developer tanner = new Developer("Tanner Lemon", 456985, true, monkey);
-            Developer frank = new Developer("Frank Ocean", 546884, false, monkey);
-            Developer john = new Developer("John Mayer", 546666, true, ape);
+            Developer tanner = new Developer("Tanner Lemon", 456985, true);
+            Developer frank = new Developer("Frank Ocean", 546884, false);
+            Developer john = new Developer("John Mayer", 546666, true);
 
             _developerRepo.AddDeveloper(tanner);
             _developerRepo.AddDeveloper(john);
             _developerRepo.AddDeveloper(frank);
 
-            _devTeamRepo.AddDeveloperToTeam(tanner.ID, tanner.TeamName);
-            _devTeamRepo.AddDeveloperToTeam(john.ID, john.TeamName);
-            _devTeamRepo.AddDeveloperToTeam(frank.ID, frank.TeamName);
+            _devTeamRepo.AddDeveloperToTeam(tanner.ID, "Monkey");
+            _devTeamRepo.AddDeveloperToTeam(john.ID, "Ape");
+            _devTeamRepo.AddDeveloperToTeam(frank.ID, "Monkey");
+            _devTeamRepo.AddDeveloperToTeam(tanner.ID, "Bonobo");
         }
 
         // Add developers to team helper method
@@ -484,5 +484,23 @@ namespace DevTeams_Console
                 }
             }
         }
+
+        // Display all teams for given developer
+        //private string DisplayAllTeamsForDeveloper(int devID)
+        //{
+        //    // get developer
+        //    Developer selectedDeveloper = _developerRepo.GetDeveloperByID(devID);
+
+        //    // Get list of teams
+        //    List<DevTeam> listofTeams = selectedDeveloper.TeamName;
+
+        //    // Return each team
+        //    foreach (DevTeam team in listofTeams)
+        //    {
+        //        return $"{team.TeamName}, ";
+        //    }
+
+        //    return null;
+        //}
     }
 }
