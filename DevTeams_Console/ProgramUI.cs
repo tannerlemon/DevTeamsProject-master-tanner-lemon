@@ -167,6 +167,7 @@ namespace DevTeams_Console
 
 
             _developerRepo.AddDeveloper(newDeveloper);
+            _devTeamRepo.AddDeveloperToTeam(newDeveloper.ID, devTeamAsString);
 
         }
 
@@ -210,7 +211,7 @@ namespace DevTeams_Console
             }
         }
 
-        // Update developer -- *************** Error when updating - team name !update.. **************
+        // Update developer 
         private void UpdateExistingDeveloper()
         {
             // Display all developers
@@ -303,7 +304,7 @@ namespace DevTeams_Console
         // Add developer to team
         private void AddDeveloperToTeam()
         {
-            Console.Clear();
+            DisplayAllDevelopers();
 
             // Get ID from user
             Console.WriteLine("Enter the ID of the developer you would like to add:");
@@ -317,7 +318,7 @@ namespace DevTeams_Console
             _devTeamRepo.AddDeveloperToTeam(developerID, teamName);
         }
 
-        // Create new team -- ************** Error when updating - team name !update.. *************
+        // Create new team 
         private void CreateNewTeam()
         {
             Console.Clear();
@@ -484,23 +485,5 @@ namespace DevTeams_Console
                 }
             }
         }
-
-        // Display all teams for given developer
-        //private string DisplayAllTeamsForDeveloper(int devID)
-        //{
-        //    // get developer
-        //    Developer selectedDeveloper = _developerRepo.GetDeveloperByID(devID);
-
-        //    // Get list of teams
-        //    List<DevTeam> listofTeams = selectedDeveloper.TeamName;
-
-        //    // Return each team
-        //    foreach (DevTeam team in listofTeams)
-        //    {
-        //        return $"{team.TeamName}, ";
-        //    }
-
-        //    return null;
-        //}
     }
 }
