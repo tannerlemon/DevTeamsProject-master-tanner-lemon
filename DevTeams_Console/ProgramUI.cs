@@ -15,7 +15,7 @@ namespace DevTeams_Console
         // Start
         public void Run()
         {
-            SeedDeveloperList();
+            Seed();
             Menu();
         }
         // Menu
@@ -87,14 +87,17 @@ namespace DevTeams_Console
 
                     case "9":
                         // View team by name
+                        DisplayTeamByName();
                         break;
 
                     case "10":
                         // Update existing team
+                        UpdateExistingTeam();
                         break;
 
                     case "11":
                         // Delete Existing Team
+                        RemoveExistingTeam();
                         break;
 
                     case "12":
@@ -208,7 +211,7 @@ namespace DevTeams_Console
             }
         }
 
-        // Update developer
+        // Update developer -- *************** Error when updating - team name !update.. **************
         private void UpdateExistingDeveloper()
         {
             // Display all developers
@@ -233,22 +236,18 @@ namespace DevTeams_Console
 
             // Team
             Console.WriteLine($"Enter the new team name for {newDeveloper.Name}:");
-            newDeveloper.TeamName = Console.ReadLine();
+            string devTeam = Console.ReadLine();
+            newDeveloper.TeamName = devTeam;
 
-            //// Not updating team name...
-            //devTeamAsString = newDeveloper.TeamName;
-            // ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-
-            if (_devTeamRepo.GetTeamByName(newDeveloper.TeamName) == null)
+            if (_devTeamRepo.GetTeamByName(devTeam) == null)
             {
-                DevTeam newDevTeam = new DevTeam(newDeveloper.TeamName);
+                DevTeam newDevTeam = new DevTeam(devTeam);
                 _devTeamRepo.AddDevTeam(newDevTeam);
-                _devTeamRepo.AddDeveloperToTeam(newDeveloper.ID, newDeveloper.TeamName);
+                _devTeamRepo.AddDeveloperToTeam(newDeveloper.ID, devTeam);
             }
             else
             {
-                _devTeamRepo.AddDeveloperToTeam(newDeveloper.ID, newDeveloper.TeamName);
+                _devTeamRepo.AddDeveloperToTeam(newDeveloper.ID, devTeam);
             }
 
 
@@ -319,6 +318,7 @@ namespace DevTeams_Console
             _devTeamRepo.AddDeveloperToTeam(developerID, teamName);
         }
 
+        // Create new team -- ************** Error when updating - team name !update.. *************
         private void CreateNewTeam()
         {
             Console.Clear();
@@ -329,27 +329,11 @@ namespace DevTeams_Console
             // Get team name
             Console.WriteLine("Enter the name of your new team:");
             newTeam.TeamName = Console.ReadLine();
+            _devTeamRepo.AddDevTeam(newTeam);
 
             // Ask if user wants to add any developers to team
-            Console.WriteLine($"Do you want to add any developers to {newTeam.TeamName}? (y/n)");
-            string input = Console.ReadLine();
-
-            // If yes, call add funtion
-            if (input.ToLower() == "y")
-            {
-                Console.WriteLine("Enter the ID of the developer you would like to add:");
-                int developerID = int.Parse(Console.ReadLine());
-
-                _devTeamRepo.AddDeveloperToTeam(developerID, newTeam.TeamName);
-
-                // Ask if anymore
-                Console.WriteLine($"Would you like to add anymore developers to {newTeam.TeamName}? (y/n)");
-            }
-
-
-
+            AddAnymoreQuestionMark(newTeam.TeamName);
         }
-
 
         // View List of Teams
         private void DisplayAllTeams()
@@ -366,20 +350,139 @@ namespace DevTeams_Console
             }
         }
 
-
-
-
-
-        // Seed Developer List
-        private void SeedDeveloperList()
+        // View team by name
+        private void DisplayTeamByName()
         {
-            Developer tanner = new Developer("Tanner Lemon", 456985, true, new DevTeam("Monkey"));
-            Developer frank = new Developer("Frank Ocean", 546884, false, new DevTeam("Monkey"));
-            Developer john = new Developer("John Mayer", 546666, true, new DevTeam("Ape"));
+            Console.Clear();
+
+            // Get user's input (name)
+            Console.WriteLine("Enter the name of the team you would like to view:");
+            string teamName = Console.ReadLine();
+
+            // Find that team
+            DevTeam team = _devTeamRepo.GetTeamByName(teamName);
+
+            // Display that team if not null
+            if (team != null)
+            {
+                Console.WriteLine($"Team Name: {team.TeamName}\n" +
+                    $"Member Count: {team.TeamSize}\n" +
+                    $"All Members Have Pluralsight Access: {team.AllMembersHaveAccess}\n");
+            }
+            else
+            {
+                Console.WriteLine("I could not find a team by that name..");
+            }
+        }
+
+        // Update Existing Team
+        private void UpdateExistingTeam()
+        {
+            DisplayAllTeams();
+
+            // Get team to update
+            Console.WriteLine("Enter the name of the team you would like to update:");
+            string teamName = Console.ReadLine();
+
+            // Get new info - Team Name
+            Console.WriteLine("Enter the new team name:");
+            string newName = Console.ReadLine();
+
+            // Update name
+            bool wasUpdated = _devTeamRepo.UpdateExistingTeam(teamName, newName);
+
+            // Display whether or not it was updated
+            if (wasUpdated)
+            {
+                Console.WriteLine($"\nYou successfully changed {teamName} to {newName}.");
+            }
+            else
+            {
+                Console.WriteLine("The team could not be updated.");
+            }
+        }
+
+        // Delete existing team
+        private void RemoveExistingTeam()
+        {
+            DisplayAllTeams();
+
+            // Get team name
+            Console.WriteLine("Enter the name of the team you would like to delete:");
+            string selectedTeam = Console.ReadLine();
+
+            // Remove team
+            bool wasDeleted = _devTeamRepo.RemoveDeveloperTeamFromList(selectedTeam);
+
+            // State whether or not it was deleted
+            if (wasDeleted)
+            {
+                Console.WriteLine($"{selectedTeam} was successfully deleted.");
+            }
+            else
+            {
+                Console.WriteLine($"{selectedTeam} could not be deleted.");
+            }
+        }
+
+
+
+
+
+
+        /*
+         * *******************
+         * Helpers
+         * *******************
+         */
+
+        // Seed Developer and Team Lists
+        private void Seed()
+        {
+            DevTeam monkey = new DevTeam("Monkey");
+            DevTeam ape = new DevTeam("Ape");
+            DevTeam bonobo = new DevTeam("Bonobo");
+
+            _devTeamRepo.AddDevTeam(monkey);
+            _devTeamRepo.AddDevTeam(ape);
+            _devTeamRepo.AddDevTeam(bonobo);
+
+            Developer tanner = new Developer("Tanner Lemon", 456985, true, monkey);
+            Developer frank = new Developer("Frank Ocean", 546884, false, monkey);
+            Developer john = new Developer("John Mayer", 546666, true, ape);
 
             _developerRepo.AddDeveloper(tanner);
             _developerRepo.AddDeveloper(john);
             _developerRepo.AddDeveloper(frank);
+
+            _devTeamRepo.AddDeveloperToTeam(tanner.ID, tanner.TeamName);
+            _devTeamRepo.AddDeveloperToTeam(john.ID, john.TeamName);
+            _devTeamRepo.AddDeveloperToTeam(frank.ID, frank.TeamName);
+        }
+
+        // Add developers to team helper method
+        private void AddAnymoreQuestionMark(string teamName)
+        {
+            bool keepAsking = true;
+
+            while (keepAsking)
+            {
+                Console.WriteLine($"Would you like to add anymore developers to {teamName}? (y/n)");
+                string input = Console.ReadLine();
+
+                if (input.ToLower() == "y")
+                {
+                    Console.WriteLine("Enter the ID of the developer you would like to add:");
+                    int developerID = int.Parse(Console.ReadLine());
+
+                    _devTeamRepo.AddDeveloperToTeam(developerID, teamName);
+                    keepAsking = true;
+                }
+                else
+                {
+                    keepAsking = false;
+                }
+            }
         }
     }
 }

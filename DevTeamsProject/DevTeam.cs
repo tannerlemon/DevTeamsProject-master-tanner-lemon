@@ -25,6 +25,11 @@ namespace DevTeamsProject
         {
             int theyHaveAccess = 0;
 
+            if (developerDirectory.Count == 0)
+            {
+                return false;
+            }
+
             foreach (Developer developer in developerDirectory)
             {
                 if (developer.HasAccessToPluralsight == true)

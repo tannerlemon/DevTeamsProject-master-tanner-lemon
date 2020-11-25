@@ -8,7 +8,7 @@ namespace DevTeamsProject
 {
     public class DeveloperRepo
     {
-        private readonly List<Developer> _developerDirectory = new List<Developer>();
+        private readonly List<Developer> _developerDirectory = KomodoDataBase._developers;
 
 
         //Developer Create

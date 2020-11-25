@@ -9,7 +9,7 @@ namespace DevTeamsProject
     public class DevTeamRepo
     {
         private readonly DeveloperRepo _developerRepo = new DeveloperRepo(); // this gives you access to the _developerDirectory so you can access existing Developers and add them to a team
-        private readonly List<DevTeam> _devTeams = new List<DevTeam>();
+        private readonly List<DevTeam> _devTeams = KomodoDataBase._teams;
 
         //DevTeam Create
         public void AddDevTeam(DevTeam devTeam)
@@ -26,13 +26,13 @@ namespace DevTeamsProject
 
 
         //DevTeam Update
-        public bool UpdateExistingTeam(string originalTeamName, DevTeam newTeam)
+        public bool UpdateExistingTeam(string originalTeamName, string newTeamName)
         {
             DevTeam oldTeam = GetTeamByName(originalTeamName);
 
             if (oldTeam != null)
             {
-                oldTeam.TeamName = newTeam.TeamName;
+                oldTeam.TeamName = newTeamName;
 
                 return true;
             }
@@ -59,7 +59,6 @@ namespace DevTeamsProject
             {
                 Console.WriteLine("\nSorry, that team doesn't exist.");
             }
-
         }
 
 
