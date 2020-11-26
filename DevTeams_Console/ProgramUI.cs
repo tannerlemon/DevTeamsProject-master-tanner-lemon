@@ -18,6 +18,7 @@ namespace DevTeams_Console
             Seed();
             Menu();
         }
+
         // Menu
         private void Menu()
         {
@@ -32,12 +33,14 @@ namespace DevTeams_Console
                     "4. Update Existing Developer\n" +
                     "5. Delete Existing Developer\n" +
                     "6. Add Developer To Team\n" +
-                    "7. Create New Team\n" +
-                    "8. View All Teams\n" +
-                    "9. View Team By Name\n" +
-                    "10. Update Existing Team\n" +
-                    "11. Delete Existing Team\n" +
-                    "12. Exit");
+                    "7. Remove Developer From Team\n" +
+                    "8. Create New Team\n" +
+                    "9. View All Teams\n" +
+                    "10. View Team By Name\n" +
+                    "11. Update Existing Team\n" +
+                    "12. Delete Existing Team\n" +
+                    "13. List Of Developers That Need Pluralsight Access\n" +
+                    "14. Exit");
 
                 // Get user's input
                 string input = Console.ReadLine();
@@ -76,31 +79,41 @@ namespace DevTeams_Console
                         break;
 
                     case "7":
+                        // Remove developer from team
+                        RemoveDeveloperFromTeam();
+                        break;
+
+                    case "8":
                         // Create new team
                         CreateNewTeam();
                         break;
 
-                    case "8":
+                    case "9":
                         // View all teams
                         DisplayAllTeams();
                         break;
 
-                    case "9":
+                    case "10":
                         // View team by name
                         DisplayTeamByName();
                         break;
 
-                    case "10":
+                    case "11":
                         // Update existing team
                         UpdateExistingTeam();
                         break;
 
-                    case "11":
+                    case "12":
                         // Delete Existing Team
                         RemoveExistingTeam();
                         break;
 
-                    case "12":
+                    case "13":
+                        // List of developers that need pluralsight
+                        GetListOfPluralsightNeeders();
+                        break;
+
+                    case "14":
                         // Exit
                         Console.WriteLine("Goodbye!");
                         keepRunning = false;
@@ -129,17 +142,33 @@ namespace DevTeams_Console
             // Name
             Console.WriteLine("Enter the name of the developer:");
             newDeveloper.Name = Console.ReadLine();
+            // Check for empty string
+            if (!Input(newDeveloper.Name))
+            {
+                return;
+            }
 
 
             // ID Number
             Console.WriteLine($"\nEnter {newDeveloper.Name}'s ID number:");
             string IDasString = Console.ReadLine();
+            // Check for empty string
+            if (!Input(IDasString))
+            {
+                return;
+            }
             newDeveloper.ID = int.Parse(IDasString);
+
 
 
             // Has Access
             Console.WriteLine($"\nDoes {newDeveloper.Name} have access to Pluralsight? (y/n)");
             string hasAccessString = Console.ReadLine().ToLower();
+            // Check for empty string
+            if (!Input(hasAccessString))
+            {
+                return;
+            }
 
             if (hasAccessString == "y")
             {
@@ -154,6 +183,11 @@ namespace DevTeams_Console
             // Team Name
             Console.WriteLine($"\nEnter the team name that {newDeveloper.Name} belongs to:");
             string devTeamAsString = Console.ReadLine();
+            // Check for empty string
+            if (!Input(devTeamAsString))
+            {
+                return;
+            }
 
             if (_devTeamRepo.GetTeamByName(devTeamAsString) == null)
             {
@@ -196,6 +230,12 @@ namespace DevTeams_Console
 
             // Get user's input
             string IDasString = Console.ReadLine();
+            // Check for empty string
+            if (!Input(IDasString))
+            {
+                return;
+            }
+
             int IDasInt = int.Parse(IDasString);
 
             // Find developer by that name
@@ -221,7 +261,19 @@ namespace DevTeams_Console
             Console.WriteLine("\nEnter the ID of the developer you would like to update:");
 
             // Get that developer
-            int oldDeveloper = int.Parse(Console.ReadLine());
+            string oldDeveloperAsString = Console.ReadLine();
+            // Check for empty string
+            if (!Input(oldDeveloperAsString))
+            {
+                return;
+            }
+
+            int oldDeveloper = int.Parse(oldDeveloperAsString);
+
+            if (!DeveloperExists(oldDeveloper))
+            {
+                return;
+            }
 
             // Build a new object
             Developer newDeveloper = new Developer();
@@ -229,6 +281,11 @@ namespace DevTeams_Console
             // Name
             Console.WriteLine("Enter the new name of the developer:");
             newDeveloper.Name = Console.ReadLine();
+            // Check for empty string
+            if (!Input(newDeveloper.Name))
+            {
+                return;
+            }
 
             // ID
             //Console.WriteLine($"Enter the new ID for {newDeveloper.Name}:");
@@ -237,6 +294,11 @@ namespace DevTeams_Console
             // Team
             Console.WriteLine($"Enter the new team name for {newDeveloper.Name}:");
             string devTeam = Console.ReadLine();
+            // Check for empty string
+            if (!Input(devTeam))
+            {
+                return;
+            }
 
 
             if (_devTeamRepo.GetTeamByName(devTeam) == null)
@@ -254,6 +316,11 @@ namespace DevTeams_Console
             // Access
             Console.WriteLine($"Does {newDeveloper.Name} have access to Pluralsight? (y/n)");
             string hasAccessString = Console.ReadLine().ToLower();
+            // Check for empty string
+            if (!Input(hasAccessString))
+            {
+                return;
+            }
 
             if (hasAccessString == "y")
             {
@@ -273,7 +340,7 @@ namespace DevTeams_Console
             }
             else
             {
-                Console.WriteLine("\nCould not update developer.");
+                Console.WriteLine("\nSorry, I could not update the developer.");
             }
         }
 
@@ -285,7 +352,19 @@ namespace DevTeams_Console
             // Get the ID of the developer to remove
             Console.WriteLine("Enter the ID of the developer you would like to remove:");
 
-            int input = int.Parse(Console.ReadLine());
+            string IDasString = Console.ReadLine();
+            // Check for empty string
+            if (!Input(IDasString))
+            {
+                return;
+            }
+
+            int input = int.Parse(IDasString);
+
+            if (!DeveloperExists(input))
+            {
+                return;
+            }
 
             // Call the delete method
             bool wasDeleted = _developerRepo.RemoveDeveloperFromList(input);
@@ -308,14 +387,109 @@ namespace DevTeams_Console
 
             // Get ID from user
             Console.WriteLine("Enter the ID of the developer you would like to add:");
-            int developerID = int.Parse(Console.ReadLine());
+            string IDasString = Console.ReadLine();
+            // Check for empty string
+            if (!Input(IDasString))
+            {
+                return;
+            }
+
+            int developerID = int.Parse(IDasString);
+
+            if (!DeveloperExists(developerID))
+            {
+                return;
+            }
 
             // Get team name from user
             Console.WriteLine("Enter the name of the team you would like to add them to:");
             string teamName = Console.ReadLine();
+            // Check for empty string
+            if (!Input(teamName))
+            {
+                return;
+            }
 
             // Call add method with parameters
-            _devTeamRepo.AddDeveloperToTeam(developerID, teamName);
+            bool wasAdded = _devTeamRepo.AddDeveloperToTeam(developerID, teamName);
+
+            // Ask if they want to add anymore to the team
+            if (wasAdded)
+            {
+                Console.WriteLine($"Developer {developerID} was successfully added to {teamName}.");
+                AddAnymoreQuestionMark(teamName);
+            }
+            else
+            {
+                Console.WriteLine($"Sorry, team {teamName} doesn't exist. Would you like to create it now? (y/n)");
+                string yesOrNo = Console.ReadLine();
+                // Check for empty string
+                if (!Input(yesOrNo))
+                {
+                    return;
+                }
+
+                if (yesOrNo.ToLower() == "y")
+                {
+                    DevTeam newTeam = new DevTeam();
+                    _devTeamRepo.AddDevTeam(newTeam);
+                    newTeam.TeamName = teamName;
+
+                    _devTeamRepo.AddDeveloperToTeam(developerID, teamName);
+
+                    Console.WriteLine($"I created team {teamName} for you and added developer {developerID} to it. ");
+                    AddAnymoreQuestionMark(teamName);
+                }
+                else
+                {
+                    Console.WriteLine("Okay, I won't create it.");
+                }
+            }
+
+        }
+
+        // Remove developer from team
+        private void RemoveDeveloperFromTeam()
+        {
+            DisplayAllDevelopers();
+
+            // Get ID from user
+            Console.WriteLine("Enter the ID of the developer you would like to remove:");
+            string IDasString = Console.ReadLine();
+            // Check for empty string
+            if (!Input(IDasString))
+            {
+                return;
+            }
+
+            int developerID = int.Parse(IDasString);
+
+            if (!DeveloperExists(developerID))
+            {
+                return;
+            }
+
+            // Get team name from user
+            Console.WriteLine("Enter the name of the team you would like to remove them from:");
+            string teamName = Console.ReadLine();
+            // Check for empty string
+            if (!Input(teamName))
+            {
+                return;
+            }
+
+            // Call aremove method with parameters
+            bool wasRemoved = _devTeamRepo.RemoveDeveloperFromTeam(developerID, teamName);
+
+            // Ask if they want to add anymore to the team
+            if (wasRemoved)
+            {
+                Console.WriteLine($"Developer {developerID} was successfully removed from {teamName}.");
+            }
+            else
+            {
+                Console.WriteLine("Sorry, that team doesn't exist.");
+            }
         }
 
         // Create new team 
@@ -329,6 +503,12 @@ namespace DevTeams_Console
             // Get team name
             Console.WriteLine("Enter the name of your new team:");
             newTeam.TeamName = Console.ReadLine();
+            // Check for empty string
+            if (!Input(newTeam.TeamName))
+            {
+                return;
+            }
+
             _devTeamRepo.AddDevTeam(newTeam);
 
             // Ask if user wants to add any developers to team
@@ -425,6 +605,25 @@ namespace DevTeams_Console
             }
         }
 
+        // Get list of developers that need access -- 
+        private void GetListOfPluralsightNeeders()
+        {
+            Console.Clear();
+
+            Console.WriteLine($"These developers need access to Pluralsight:\n");
+
+            List<Developer> listofDevs = KomodoDataBase._developers;
+            foreach (Developer developer in listofDevs)
+            {
+                if (!developer.HasAccessToPluralsight)
+                {
+                    Console.WriteLine($"Name: {developer.Name}\n" +
+                        $"ID Number: {developer.ID}\n" +
+                        $"Team(s): {developer.TeamName}\n");
+                }
+            }
+        }
+
 
 
 
@@ -435,6 +634,9 @@ namespace DevTeams_Console
          * Helpers
          * *******************
          */
+
+        // ********** Need a method to check if user inputs a number or not for .Parse methods ***********
+
 
         // Seed Developer and Team Lists
         private void Seed()
@@ -464,17 +666,31 @@ namespace DevTeams_Console
         // Add developers to team helper method
         private void AddAnymoreQuestionMark(string teamName)
         {
+            DisplayAllDevelopers();
+
             bool keepAsking = true;
 
             while (keepAsking)
             {
                 Console.WriteLine($"Would you like to add anymore developers to {teamName}? (y/n)");
                 string input = Console.ReadLine();
+                // Check for empty string
+                if (!Input(input))
+                {
+                    return;
+                }
 
                 if (input.ToLower() == "y")
                 {
                     Console.WriteLine("Enter the ID of the developer you would like to add:");
-                    int developerID = int.Parse(Console.ReadLine());
+                    string IDasString = Console.ReadLine();
+                    // Check for empty string
+                    if (!Input(IDasString))
+                    {
+                        return;
+                    }
+
+                    int developerID = int.Parse(IDasString);
 
                     _devTeamRepo.AddDeveloperToTeam(developerID, teamName);
                     keepAsking = true;
@@ -483,6 +699,34 @@ namespace DevTeams_Console
                 {
                     keepAsking = false;
                 }
+            }
+        }
+
+        // Check if developer exists
+        private bool DeveloperExists(int developerID)
+        {
+            if (!_developerRepo.DeveloperExists(developerID))
+            {
+                Console.WriteLine($"Sorry, I can't find a developer with ID number {developerID}..");
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        // Check if empty input
+        private bool Input(string input)
+        {
+            if (input == "")
+            {
+                Console.WriteLine("Sorry, you have to enter something for this to work.");
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
     }

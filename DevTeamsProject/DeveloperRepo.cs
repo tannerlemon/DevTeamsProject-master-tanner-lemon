@@ -82,5 +82,21 @@ namespace DevTeamsProject
 
             return null;
         }
+
+        // Check if developer exists
+        public bool DeveloperExists(int IDnumber)
+        {
+            // if developer with this ID number is not null, return true
+            Developer developerInQuestion = GetDeveloperByID(IDnumber);
+
+            if (developerInQuestion != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

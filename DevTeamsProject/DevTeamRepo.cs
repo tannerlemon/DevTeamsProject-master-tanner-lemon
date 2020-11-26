@@ -24,7 +24,6 @@ namespace DevTeamsProject
             return _devTeams;
         }
 
-
         //DevTeam Update
         public bool UpdateExistingTeam(string originalTeamName, string newTeamName)
         {
@@ -42,7 +41,7 @@ namespace DevTeamsProject
             }
         }
 
-        public void AddDeveloperToTeam(int developerID, string devTeamName)
+        public bool AddDeveloperToTeam(int developerID, string devTeamName)
         {
             // Get existing developer
             Developer selectedDeveloper = _developerRepo.GetDeveloperByID(developerID);
@@ -54,10 +53,31 @@ namespace DevTeamsProject
             if (selectedTeam != null)
             {
                 selectedTeam.listOfDevelopers.Add(selectedDeveloper);
+                return true;
             }
             else
             {
-                Console.WriteLine("\nSorry, that team doesn't exist.");
+                return false;
+            }
+        }
+
+        public bool RemoveDeveloperFromTeam(int developerID, string devTeamName)
+        {
+            // Get existing developer
+            Developer selectedDeveloper = _developerRepo.GetDeveloperByID(developerID);
+
+            // Get team
+            DevTeam selectedTeam = GetTeamByName(devTeamName);
+
+            // Remove developer from team
+            if (selectedTeam != null)
+            {
+                selectedTeam.listOfDevelopers.Remove(selectedDeveloper);
+                return true;
+            }
+            else
+            {
+                return false;
             }
         }
 
