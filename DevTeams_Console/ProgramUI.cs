@@ -157,7 +157,17 @@ namespace DevTeams_Console
             {
                 return;
             }
-            newDeveloper.ID = int.Parse(IDasString);
+
+            if (IsNum(IDasString))
+            {
+                newDeveloper.ID = int.Parse(IDasString);
+            }
+            else
+            {
+                Console.WriteLine("Sorry, you need to enter a number here.");
+                return;
+            }
+
 
 
 
@@ -236,7 +246,17 @@ namespace DevTeams_Console
                 return;
             }
 
-            int IDasInt = int.Parse(IDasString);
+            int IDasInt;
+            if (IsNum(IDasString))
+            {
+                IDasInt = int.Parse(IDasString);
+            }
+            else
+            {
+                Console.WriteLine("Sorry, you need to enter a number here.");
+                return;
+            }
+
 
             // Find developer by that name
             Developer developer = _developerRepo.GetDeveloperByID(IDasInt);
@@ -268,7 +288,18 @@ namespace DevTeams_Console
                 return;
             }
 
-            int oldDeveloper = int.Parse(oldDeveloperAsString);
+            int oldDeveloper;
+            if (IsNum(oldDeveloperAsString))
+            {
+                oldDeveloper = int.Parse(oldDeveloperAsString);
+            }
+            else
+            {
+                Console.WriteLine("Sorry, you need to enter a number here.");
+                return;
+            }
+
+
 
             if (!DeveloperExists(oldDeveloper))
             {
@@ -359,7 +390,16 @@ namespace DevTeams_Console
                 return;
             }
 
-            int input = int.Parse(IDasString);
+            int input;
+            if (IsNum(IDasString))
+            {
+                input = int.Parse(IDasString);
+            }
+            else
+            {
+                Console.WriteLine("Sorry, you need to enter a number here.");
+                return;
+            }
 
             if (!DeveloperExists(input))
             {
@@ -394,7 +434,16 @@ namespace DevTeams_Console
                 return;
             }
 
-            int developerID = int.Parse(IDasString);
+            int developerID;
+            if (IsNum(IDasString))
+            {
+                developerID = int.Parse(IDasString);
+            }
+            else
+            {
+                Console.WriteLine("Sorry, you need to enter a number here.");
+                return;
+            }
 
             if (!DeveloperExists(developerID))
             {
@@ -728,6 +777,13 @@ namespace DevTeams_Console
             {
                 return true;
             }
+        }
+
+        // Check if number
+        private bool IsNum(string numAsString)
+        {
+            int num;
+            return int.TryParse(numAsString, out num);
         }
     }
 }
