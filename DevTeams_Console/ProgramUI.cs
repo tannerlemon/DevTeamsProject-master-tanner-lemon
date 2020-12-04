@@ -319,7 +319,7 @@ namespace DevTeams_Console
             }
 
             // ID
-            //Console.WriteLine($"Enter the new ID for {newDeveloper.Name}:");
+            Console.WriteLine($"Enter the new ID for {newDeveloper.Name}:");
             newDeveloper.ID = oldDeveloper;
 
             // Team
